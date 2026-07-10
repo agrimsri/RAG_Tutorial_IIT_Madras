@@ -22,6 +22,9 @@ while True:
 
     query = input("Ask a question : ")
 
+    # RAG retrieval now uses two stages:
+    # 1. Hybrid search retrieves a larger candidate pool.
+    # 2. A cross-encoder reranker reorders those candidates for the query.
     results = hybrid_retrieve(query)
 
     print("\nRetrieved Documents\n")
