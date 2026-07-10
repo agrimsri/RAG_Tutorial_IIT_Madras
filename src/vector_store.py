@@ -31,6 +31,59 @@ if is_indexed():
         hybrid.build_index(stored["ids"], stored["documents"])
 
 
+def _source_from_chunk_id(chunk_id):
+    """
+    Convert a chunk id back into the original source document name.
+
+    Example:
+    "01_perseverance_3" -> "01_perseverance"
+    """
+
+    return chunk_id.rsplit("_", 1)[0]
+
+
+def _retrieve_chunk_ids(query, k=5, candidate_k=20, use_reranking=True):
+    """
+    Return ranked chunk ids instead of chunk text.
+
+    Keeping this separate lets us support both:
+    - plain retrieval demos, which only print chunk text,
+    - grounded generation, which needs chunk ids for citations.
+    """
+
+    query_vector = embed(query)
+
+    vector_results = collection.query(
+        query_embeddings=[query_vector],
+        n_results=candidate_k
+    )
+
+    vector_ids = vector_results["ids"][0]
+
+    bm25_ids = hybrid.bm25_search(
+        query,
+        candidate_k
+    )
+
+    fused = hybrid.reciprocal_rank_fusion(
+        vector_ids,
+        bm25_ids
+    )
+
+    candidate_ids = fused[:candidate_k]
+
+    if use_reranking:
+        final_ids = rerank(
+            query,
+            candidate_ids,
+            chunk_lookup
+        )
+    else:
+        final_ids = candidate_ids
+
+    return final_ids[:k]
+
+
 
 def index_documents(documents, ids):
 
@@ -82,37 +135,41 @@ def hybrid_retrieve(query, k=5, candidate_k=20, use_reranking=True):
       most promising candidates.
     """
 
-    query_vector = embed(query)
-
-    vector_results = collection.query(
-        query_embeddings=[query_vector],
-        n_results=candidate_k
-    )
-
-    vector_ids = vector_results["ids"][0]
-
-    bm25_ids = hybrid.bm25_search(
+    final_ids = _retrieve_chunk_ids(
         query,
-        candidate_k
+        k,
+        candidate_k,
+        use_reranking
     )
-
-    fused = hybrid.reciprocal_rank_fusion(
-        vector_ids,
-        bm25_ids
-    )
-
-    candidate_ids = fused[:candidate_k]
-
-    if use_reranking:
-        final_ids = rerank(
-            query,
-            candidate_ids,
-            chunk_lookup
-        )
-    else:
-        final_ids = candidate_ids
 
     return [
         chunk_lookup[i]
-        for i in final_ids[:k]
+        for i in final_ids
+    ]
+
+
+def retrieve_with_citations(query, k=5, candidate_k=20, use_reranking=True):
+    """
+    Retrieve chunks and keep citation metadata.
+
+    Each returned item has:
+    - id: exact chunk id
+    - source: original document name
+    - text: retrieved chunk text
+    """
+
+    final_ids = _retrieve_chunk_ids(
+        query,
+        k,
+        candidate_k,
+        use_reranking
+    )
+
+    return [
+        {
+            "id": chunk_id,
+            "source": _source_from_chunk_id(chunk_id),
+            "text": chunk_lookup[chunk_id]
+        }
+        for chunk_id in final_ids
     ]
