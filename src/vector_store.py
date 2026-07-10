@@ -1,7 +1,7 @@
 import chromadb
 
-from llm_client import embed
 from chunking import recursive_chunk
+from late_chunking import late_chunk_embeddings
 
 client = chromadb.Client()
 
@@ -14,9 +14,12 @@ def index_documents(documents, ids):
 
         chunks = recursive_chunk(document)
 
-        for i, chunk in enumerate(chunks):
+        vectors = late_chunk_embeddings(
+            document,
+            chunks
+        )
 
-            vector = embed(chunk)
+        for i, (chunk, vector) in enumerate(zip(chunks, vectors)):
 
             collection.add(
                 ids=[f"{doc_id}_{i}"],
@@ -26,6 +29,8 @@ def index_documents(documents, ids):
 
 
 def retrieve(query, k=3):
+
+    from llm_client import embed
 
     query_vector = embed(query)
 
