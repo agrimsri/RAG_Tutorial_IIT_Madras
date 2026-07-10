@@ -6,6 +6,7 @@ from chunking import recursive_chunk
 from contextual_retrieval import contextualize_chunk
 from llm_client import embed
 from hybrid_search import HybridSearch
+from reranker import rerank
 
 # Persist the collection on disk so embeddings survive restarts.
 _DB_PATH = os.path.join(os.path.dirname(__file__), "..", "chroma_db_milestone_5")
@@ -70,20 +71,29 @@ def index_documents(documents, ids):
     )
 
 
-def hybrid_retrieve(query, k=5):
+def hybrid_retrieve(query, k=5, candidate_k=20, use_reranking=True):
+    """
+    Retrieve chunks for RAG.
+
+    Teaching note:
+    - k is the number of chunks we finally give to the LLM.
+    - candidate_k is the larger pool we retrieve cheaply before reranking.
+    - reranking is a second-stage filter that spends more compute only on the
+      most promising candidates.
+    """
 
     query_vector = embed(query)
 
     vector_results = collection.query(
         query_embeddings=[query_vector],
-        n_results=k
+        n_results=candidate_k
     )
 
     vector_ids = vector_results["ids"][0]
 
     bm25_ids = hybrid.bm25_search(
         query,
-        k
+        candidate_k
     )
 
     fused = hybrid.reciprocal_rank_fusion(
@@ -91,7 +101,18 @@ def hybrid_retrieve(query, k=5):
         bm25_ids
     )
 
+    candidate_ids = fused[:candidate_k]
+
+    if use_reranking:
+        final_ids = rerank(
+            query,
+            candidate_ids,
+            chunk_lookup
+        )
+    else:
+        final_ids = candidate_ids
+
     return [
         chunk_lookup[i]
-        for i in fused[:k]
+        for i in final_ids[:k]
     ]
