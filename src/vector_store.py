@@ -1,6 +1,7 @@
 import chromadb
 
 from llm_client import embed
+from chunking import recursive_chunk
 
 client = chromadb.Client()
 
@@ -9,15 +10,19 @@ collection = client.create_collection("mission_kb")
 
 def index_documents(documents, ids):
 
-    for doc, doc_id in zip(documents, ids):
+    for document, doc_id in zip(documents, ids):
 
-        vector = embed(doc)
+        chunks = recursive_chunk(document)
 
-        collection.add(
-            ids=[doc_id],
-            embeddings=[vector],
-            documents=[doc]
-        )
+        for i, chunk in enumerate(chunks):
+
+            vector = embed(chunk)
+
+            collection.add(
+                ids=[f"{doc_id}_{i}"],
+                embeddings=[vector],
+                documents=[chunk]
+            )
 
 
 def retrieve(query, k=3):
