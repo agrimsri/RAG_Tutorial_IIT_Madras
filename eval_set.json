@@ -1,0 +1,61 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which Mars rover is responsible for collecting and caching rock samples for the planned Mars Sample Return campaign?",
+      "ground_truth": "The Perseverance rover collects cylindrical rock core samples, seals them in titanium tubes, and caches them on the Martian surface for the planned Mars Sample Return campaign.",
+      "reference_docs": [
+        "01_perseverance.txt"
+      ]
+    },
+    {
+      "id": 2,
+      "question": "How does Curiosity's method of studying Martian rocks differ from Perseverance's?",
+      "ground_truth": "Curiosity analyzes drilled rock samples directly on Mars using its onboard laboratory, including instruments such as SAM and CheMin. Perseverance instead collects and stores carefully selected rock core samples so they can be returned to Earth during the future Mars Sample Return campaign.",
+      "reference_docs": [
+        "01_perseverance.txt",
+        "02_curiosity.txt"
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Which astronaut's earlier mission demonstrated the decision-making skills that later helped during Apollo 11, and what happened during that earlier mission?",
+      "ground_truth": "Neil Armstrong demonstrated exceptional decision-making during the Gemini 8 mission. After successfully docking two spacecraft, a stuck thruster caused the spacecraft to spin rapidly. Armstrong stabilized the spacecraft using the reentry control system, and this calm response contributed to NASA selecting him to command Apollo 11.",
+      "reference_docs": [
+        "04_apollo11.txt",
+        "06_neil_armstrong.txt"
+      ]
+    },
+    {
+      "id": 4,
+      "question": "According to the dataset, how do robotic missions and human missions complement one another in space exploration?",
+      "ground_truth": "Robotic missions such as Spirit, Curiosity, and Perseverance can operate for years in harsh environments, collect scientific data, and identify promising exploration targets. Human missions such as Apollo and Artemis allow astronauts to make rapid scientific decisions, adapt to unexpected situations, and perform complex exploration tasks. Together, robotic and human missions support NASA's long-term Moon to Mars strategy.",
+      "reference_docs": [
+        "01_perseverance.txt",
+        "04_apollo11.txt",
+        "05_artemis1.txt",
+        "08_nasa_overview.txt"
+      ]
+    },
+    {
+      "id": 5,
+      "question": "Which NASA-managed laboratory operates the Mars rovers mentioned in the dataset, and which three rover missions does it manage?",
+      "ground_truth": "NASA's Jet Propulsion Laboratory (JPL) manages the operations of the Spirit, Curiosity, and Perseverance Mars rover missions.",
+      "reference_docs": [
+        "01_perseverance.txt",
+        "02_curiosity.txt",
+        "03_spirit.txt",
+        "08_nasa_overview.txt"
+      ]
+    },
+    {
+      "id": 6,
+      "question": "How did Dr. Elena Morales contribute to future Mars exploration, and which mission benefits from her work?",
+      "ground_truth": "Dr. Elena Morales worked with scientists and engineers at JPL to help prioritize geological targets for the Perseverance rover in Jezero Crater. Her recommendations influenced where Perseverance collected rock samples, which are intended for the future Mars Sample Return campaign.",
+      "reference_docs": [
+        "01_perseverance.txt",
+        "07_dr_elena_morales.txt"
+      ]
+    }
+  ]
+}
