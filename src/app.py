@@ -1,9 +1,10 @@
 from document_loader import load_documents
+from grounded_generation import answer_with_citations
 
 from vector_store import (
     index_documents,
     is_indexed,
-    hybrid_retrieve
+    retrieve_with_citations
 )
 
 
@@ -25,12 +26,20 @@ while True:
     # RAG retrieval now uses two stages:
     # 1. Hybrid search retrieves a larger candidate pool.
     # 2. A cross-encoder reranker reorders those candidates for the query.
-    results = hybrid_retrieve(query)
+    cited_results = retrieve_with_citations(query)
+
+    # Grounded generation adds the final RAG step:
+    # 3. Give the retrieved chunks to the LLM and require citations.
+    answer = answer_with_citations(query, cited_results)
+
+    print("\nGrounded Answer\n")
+
+    print(answer)
 
     print("\nRetrieved Documents\n")
 
-    for i, doc in enumerate(results, 1):
+    for i, item in enumerate(cited_results, 1):
 
-        print(f"\n----- Document {i} -----\n")
+        print(f"\n----- Document {i}: {item['source']} -----\n")
 
-        print(doc)
+        print(item["text"])
