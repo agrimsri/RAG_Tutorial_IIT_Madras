@@ -11,3 +11,6 @@ wheels/
 
 # LLM call logs
 logs/
+
+# ChromaDB persistent vector store
+chroma_db/
