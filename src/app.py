@@ -2,7 +2,8 @@ from document_loader import load_documents
 
 from vector_store import (
     index_documents,
-    retrieve
+    is_indexed,
+    hybrid_retrieve
 )
 
 
@@ -10,16 +11,18 @@ from vector_store import (
 documents, ids = load_documents()
 
 
-#Indexing the documents
-index_documents(documents, ids)
-
-print("Knowledge Base Indexed\n")
+# Only embed & index if not already cached on disk
+if is_indexed():
+    print("Knowledge Base already indexed — loading from cache.\n")
+else:
+    index_documents(documents, ids)
+    print("Knowledge Base Indexed\n")
 
 while True:
 
     query = input("Ask a question : ")
 
-    results = retrieve(query)
+    results = hybrid_retrieve(query)
 
     print("\nRetrieved Documents\n")
 
