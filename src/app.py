@@ -2,6 +2,7 @@ from document_loader import load_documents
 
 from vector_store import (
     index_documents,
+    is_indexed,
     retrieve
 )
 
@@ -10,10 +11,12 @@ from vector_store import (
 documents, ids = load_documents()
 
 
-#Indexing the documents
-index_documents(documents, ids)
-
-print("Knowledge Base Indexed\n")
+# Only embed & index if not already cached on disk
+if is_indexed():
+    print("Knowledge Base already indexed — loading from cache.\n")
+else:
+    index_documents(documents, ids)
+    print("Knowledge Base Indexed\n")
 
 while True:
 

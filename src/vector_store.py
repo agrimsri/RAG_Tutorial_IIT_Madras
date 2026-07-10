@@ -1,11 +1,20 @@
+import os
+
 import chromadb
 
 from chunking import recursive_chunk
 from late_chunking import late_chunk_embeddings
 
-client = chromadb.Client()
+# Persist the collection on disk so embeddings survive restarts.
+_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
+client = chromadb.PersistentClient(path=_DB_PATH)
 
-collection = client.create_collection("mission_kb")
+collection = client.get_or_create_collection("mission_kb")
+
+
+def is_indexed() -> bool:
+    """Return True if the collection already contains embedded documents."""
+    return collection.count() > 0
 
 
 def index_documents(documents, ids):
