@@ -3,7 +3,7 @@ from document_loader import load_documents
 from vector_store import (
     index_documents,
     is_indexed,
-    retrieve
+    hybrid_retrieve
 )
 
 
@@ -22,7 +22,7 @@ while True:
 
     query = input("Ask a question : ")
 
-    results = retrieve(query)
+    results = hybrid_retrieve(query)
 
     print("\nRetrieved Documents\n")
 
