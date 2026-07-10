@@ -12,5 +12,5 @@ wheels/
 # LLM call logs
 logs/
 
-# ChromaDB persistent vector store
-chroma_db/
+# ChromaDB persistent vector store (all branch-specific DBs)
+chroma_db*/
