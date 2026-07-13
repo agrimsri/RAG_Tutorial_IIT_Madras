@@ -48,7 +48,7 @@ graph TD
     end
 
     subgraph Generation Phase [3. Generation Phase]
-        Rerank --> CitedContext[Build Cited Context [1], [2], ...]
+        Rerank --> CitedContext["Build Cited Context [1], [2], ..."]
         Q --> LLM[Grounded Generation llama3.2]
         CitedContext --> LLM
         LLM --> Out[Grounded Answer with Citations]
