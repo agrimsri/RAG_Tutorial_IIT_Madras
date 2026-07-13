@@ -1,5 +1,8 @@
 # IIT Madras RAG Tutorial 🚀
 
+Watch it on [Youtube](https://www.youtube.com/live/BJs7JakDoIw?si=KPLFU0DDc5Iq7Sal) 
+
+
 Welcome to the **IIT Madras RAG Tutorial** educational repository! This repository is designed as a milestone-based, step-by-step educational guide to building a production-grade, state-of-the-art **Retrieval-Augmented Generation (RAG)** pipeline.
 
 Each milestone builds on the previous one, introducing a critical concept or optimization technique commonly used in modern RAG systems to improve search accuracy, document context retention, retrieval quality, and LLM groundedness.
